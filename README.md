@@ -150,7 +150,7 @@ BEGIN
 END;
 ```
 
-Codeunit 9520 Mail Management
+Codeunit 419 File Management
 ```perl
 PROCEDURE DownloadTempCustomFile@1101318000(ServerFileName@1001 : Text;ClientFileName@1101318000 : Text) : Text;
 VAR
