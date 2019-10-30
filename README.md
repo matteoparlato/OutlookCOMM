@@ -97,18 +97,22 @@ VAR
   BodyText@1000 : Text;
   MailUtilities@1101318001 : DotNet "'OutlookCOMM.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.OutlookCOMM.NET.MailUtilities" RUNONCLIENT;
   UserSetup@1101318000 : Record 91;
+  EMLFilePath@1101318002 : Text;
 BEGIN
   // Start OutlookCOMM/mpar
-  IF UserSetup.GET(USERID) AND UserSetup."Use alternative E-Mail sending" THEN
+  IF UserSetup.GET(USERID) AND UserSetup."Use alternative E-Mail sending" THEN BEGIN
+    CheckValidEmailAddress(TempEmailItem."Send to");
+    EMLFilePath := FileManagement.DownloadTempCustomFile(TempEmailItem."Attachment File Path", TempEmailItem."Attachment Name");
     EXIT(MailUtilities.SaveEML(UserSetup."E-Mail",
                                 TempEmailItem."Send to",
                                 TempEmailItem."Send CC",
                                 TempEmailItem."Send BCC",
                                 TempEmailItem.Subject,
                                 ImageBase64ToUrl(TempEmailItem.GetBodyText),
-                                DownloadPdfOnClient(TempEmailItem."Attachment File Path"),
+                                EMLFilePath,
                                 TRUE,
                                 UserSetup."Use Outlook Account sender"));
+  END;
   // Stop OutlookCOMM/mpar
   .
   .
@@ -122,17 +126,19 @@ VAR
   MailManagement@1001 : Codeunit 9520;
   UserSetup@1101318001 : Record 91;
   MailUtilities@1101318000 : DotNet "'OutlookCOMM.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.OutlookCOMM.NET.MailUtilities" RUNONCLIENT;
+  EMLFilePath@1101318002 : Text;
 BEGIN
   // Start OutlookCOMM/mpar
   IF UserSetup.GET(USERID) AND UserSetup."Use alternative E-Mail sending" THEN BEGIN
     CheckValidEmailAddress(TempEmailItem."Send to");
+    EMLFilePath := FileManagement.DownloadTempCustomFile(TempEmailItem."Attachment File Path", TempEmailItem."Attachment Name");
     MailUtilities.SaveEML(UserSetup."E-Mail",
                           TempEmailItem."Send to",
                           TempEmailItem."Send CC",
                           TempEmailItem."Send BCC",
                           TempEmailItem.Subject,
                           ImageBase64ToUrl(TempEmailItem.GetBodyText),
-                          DownloadPdfOnClient(TempEmailItem."Attachment File Path"),
+                          EMLFilePath,
                           TRUE,
                           UserSetup."Use Outlook Account sender");
     EXIT;
@@ -141,6 +147,23 @@ BEGIN
   .
   .
   .
+END;
+```
+
+Codeunit 9520 Mail Management
+```perl
+PROCEDURE DownloadTempCustomFile@1101318000(ServerFileName@1001 : Text;ClientFileName@1101318000 : Text) : Text;
+VAR
+  FileName@1102601003 : Text;
+  Path@1102601004 : Text;
+  DotPath@1101318001 : DotNet "'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.IO.Path";
+BEGIN
+  // Start OutlookCOMM/mpar
+  FileName := DotPath.Combine(DotPath.GetDirectoryName(ServerFileName), ClientFileName);
+  Path := Magicpath;
+  DOWNLOAD(ServerFileName,'',Path,AllFilesDescriptionTxt,FileName);
+  EXIT(FileName);
+  // Stop OutlookCOMM/mpar
 END;
 ```
 
