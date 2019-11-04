@@ -15,7 +15,7 @@ namespace OutlookCOMM.NET
         /// <param name="from">The sender address of the mail</param>
         /// <param name="to">The receiver address of the mail </param>
         /// <param name="cc">The CC address of the mail</param>
-        /// <param name="bcc">The bcc address of the mail</param>
+        /// <param name="bcc">The BCC address of the mail</param>
         /// <param name="subject">The subject of the mail to send</param>
         /// <param name="body">The body of the mail to send</param>
         /// <param name="attachmentPath">The path of the attachment to add to the mail</param>
