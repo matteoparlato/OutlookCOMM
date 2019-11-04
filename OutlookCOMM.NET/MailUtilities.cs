@@ -14,10 +14,13 @@ namespace OutlookCOMM.NET
         /// </summary>
         /// <param name="from">The sender address of the mail</param>
         /// <param name="to">The receiver address of the mail </param>
+        /// <param name="cc">The CC address of the mail</param>
+        /// <param name="bcc">The bcc address of the mail</param>
         /// <param name="subject">The subject of the mail to send</param>
         /// <param name="body">The body of the mail to send</param>
         /// <param name="attachmentPath">The path of the attachment to add to the mail</param>
         /// <param name="unsent">Set the X-Unsent property of the EML</param>
+        /// <param name="useOutlookAccount">If true uses the sender mail defined in Outlook otherwise uses from parameter</param>
         public static bool SaveEML(string from, string to, string cc, string bcc, string subject, string body, string attachmentPath, bool unsent, bool useOutlookAccount)
         {
             string tempFolderPath = Path.Combine(Path.GetTempPath(), "OutlookCOMM");
