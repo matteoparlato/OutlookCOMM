@@ -23,6 +23,7 @@ OutlookCOMM is a component which can be used in Microsoft Dynamics NAV as a work
 
 * For NAV 2009R2 (RTC):
   1. Copy the OutlookCOMM.NET35.dll into the Add-in folder placed inside both NAV service and RTC installation folders (the dll should be copied in every installed RTC).
+  2. Restart NAV service(s).
 
 * For NAV 2009R2 Classic and previous versions:
   1. Run `RegisterOCOMMInterface.ps1` with PowerShell on every installed client.
