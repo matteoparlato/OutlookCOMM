@@ -9,7 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCOMM.Test", "Outlook
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCOMM.NET", "OutlookCOMM.NET\OutlookCOMM.NET.csproj", "{3632F6E1-09D5-424A-8E59-C7958BE49703}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "OutlookCOMM.Core", "OutlookCOMM.Core\OutlookCOMM.Core.shproj", "{9DB8B720-D948-41C7-A83B-06D075F4E825}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		OutlookCOMM.Core\OutlookCOMM.Core.projitems*{3632f6e1-09d5-424a-8e59-c7958be49703}*SharedItemsImports = 4
+		OutlookCOMM.Core\OutlookCOMM.Core.projitems*{9db8b720-d948-41c7-a83b-06d075f4e825}*SharedItemsImports = 13
+		OutlookCOMM.Core\OutlookCOMM.Core.projitems*{edb95749-b06a-4e88-8cf6-4f6e8da2df7e}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

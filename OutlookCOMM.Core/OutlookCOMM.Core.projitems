@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9db8b720-d948-41c7-a83b-06d075f4e825</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>OutlookCOMM.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MailUtilitiesBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMailUtilities.cs" />
+  </ItemGroup>
+</Project>
