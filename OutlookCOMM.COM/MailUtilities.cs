@@ -5,6 +5,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
+using System.Collections.Generic;
 
 namespace OutlookCOMM.COM
 {
@@ -14,6 +15,8 @@ namespace OutlookCOMM.COM
     [ProgId("MailUtilities")]  
     public class MailUtilities
     {
+        public char Delimiter { get; set; } = ';';
+
         /// <summary>
         /// Method which creates an EML file with passed information.
         /// </summary>
@@ -51,14 +54,33 @@ namespace OutlookCOMM.COM
                 // Add mail addresses
                 if (!string.IsNullOrEmpty(from))
                     message.From = new MailAddress(from);
+
                 if (useOutlookAccount)
                     message.From = new MailAddress("example@example.com");
+
                 if (!string.IsNullOrEmpty(to))
-                    message.To.Add(to);
+                {
+                    foreach (string toAddress in SplitAddressesByDelimiter(to, Delimiter))
+                    {
+                        message.To.Add(toAddress);
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(cc))
-                    message.CC.Add(cc);
+                {
+                    foreach (string toAddress in SplitAddressesByDelimiter(cc, Delimiter))
+                    {
+                        message.CC.Add(toAddress);
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(bcc))
-                    message.Bcc.Add(bcc);
+                {
+                    foreach (string toAddress in SplitAddressesByDelimiter(bcc, Delimiter))
+                    {
+                        message.Bcc.Add(toAddress);
+                    }
+                }
 
                 // Add subject and body to 
                 message.Subject = subject;
@@ -126,6 +148,44 @@ namespace OutlookCOMM.COM
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Method which allow to set a different delimiter (
+        /// </summary>
+        /// <param name="delimiter"></param>
+        public void SetDelimiter(char delimiter)
+        {
+            Delimiter = delimiter;
+        }
+
+        /// <summary>
+        /// Method which separates a string containing multiple addresses using the given delimiter.
+        /// </summary>
+        /// <param name="addresses">The string containing the addresses</param>
+        /// <param name="delimiter">The delimiter used to separate the addresses</param>
+        /// <returns>A collection of addresses</returns>
+        private IEnumerable<string> SplitAddressesByDelimiter(string addresses, char delimiter)
+        {
+            int startIndex = 0;
+            int delimiterIndex = 0;
+
+            while (delimiterIndex >= 0)
+            {
+                delimiterIndex = addresses.IndexOf(delimiter, startIndex);
+                string substring = addresses;
+                if (delimiterIndex > 0)
+                    substring = addresses.Substring(0, delimiterIndex);
+
+                if (!substring.Contains("\"") || substring.IndexOf("\"") != substring.LastIndexOf("\""))
+                {
+                    yield return substring;
+                    addresses = addresses.Substring(delimiterIndex + 1);
+                    startIndex = 0;
+                }
+                else
+                    startIndex = delimiterIndex + 1;
+            }
         }
     }
 }
