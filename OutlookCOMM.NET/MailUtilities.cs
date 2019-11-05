@@ -38,77 +38,76 @@ namespace OutlookCOMM.NET
                 // Create temporary folder where to place the eml file
                 Directory.CreateDirectory(tempFolderPath);
 
-                MailMessage message = new MailMessage();
-
-                // When set unsent = true the EML will be opened in a *COMPOSE* window (NOT a display one)
-                if (unsent)
+                using (MailMessage message = new MailMessage())
                 {
-                    message.Headers.Add("X-Unsent", "1");
-                }
-
-                // Add mail addresses
-                if (!string.IsNullOrEmpty(from))
-                    message.From = new MailAddress(from);
-
-                if (useOutlookAccount)
-                    message.From = new MailAddress("example@example.com");
-
-                if (!string.IsNullOrEmpty(to))
-                {
-                    foreach (string toAddress in SplitAddressesByDelimiter(to, Delimiter))
+                    // When set unsent = true the EML will be opened in a *COMPOSE* window (NOT a display one)
+                    if (unsent)
                     {
-                        message.To.Add(toAddress);
+                        message.Headers.Add("X-Unsent", "1");
+                    }
+
+                    // Add mail addresses
+                    if (!string.IsNullOrEmpty(from))
+                        message.From = new MailAddress(from);
+
+                    if (useOutlookAccount)
+                        message.From = new MailAddress("example@example.com");
+
+                    if (!string.IsNullOrEmpty(to))
+                    {
+                        foreach (string toAddress in SplitAddressesByDelimiter(to, Delimiter))
+                        {
+                            message.To.Add(toAddress);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(cc))
+                    {
+                        foreach (string toAddress in SplitAddressesByDelimiter(cc, Delimiter))
+                        {
+                            message.CC.Add(toAddress);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(bcc))
+                    {
+                        foreach (string toAddress in SplitAddressesByDelimiter(bcc, Delimiter))
+                        {
+                            message.Bcc.Add(toAddress);
+                        }
+                    }
+
+                    // Add subject and body to 
+                    message.Subject = subject;
+                    message.SubjectEncoding = Encoding.UTF8;
+                    message.Body = body;
+                    message.BodyEncoding = Encoding.UTF8;
+
+                    // Add the attachment to the EML (encoded as base64 string)
+                    if (!string.IsNullOrEmpty(attachmentPath))
+                    {
+                        if (File.Exists(attachmentPath))
+                        {
+                            // Avoid System.IO.File.Delete exception
+                            string newAttachmentPath = Path.Combine(tempFolderPath, Path.GetFileName(attachmentPath));
+                            File.Copy(attachmentPath, newAttachmentPath);
+                            message.Attachments.Add(new Attachment(newAttachmentPath));
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException("The attachment was not found in specified folder.", attachmentPath);
+                        }
+                    }
+
+                    // Always use HTML body format
+                    message.IsBodyHtml = true;
+
+                    using (SmtpClient smtpClient = new SmtpClient { DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory, PickupDirectoryLocation = tempFolderPath })
+                    {
+                        // Save the created message to the disk instead of calling the default mail client
+                        smtpClient.Send(message);
                     }
                 }
-
-                if (!string.IsNullOrEmpty(cc))
-                {
-                    foreach (string toAddress in SplitAddressesByDelimiter(cc, Delimiter))
-                    {
-                        message.CC.Add(toAddress);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(bcc))
-                {
-                    foreach (string toAddress in SplitAddressesByDelimiter(bcc, Delimiter))
-                    {
-                        message.Bcc.Add(toAddress);
-                    }
-                }
-
-                // Add subject and body to 
-                message.Subject = subject;
-                message.SubjectEncoding = Encoding.UTF8;
-                message.Body = body;
-                message.BodyEncoding = Encoding.UTF8;
-
-                // Add the attachment to the EML (encoded as base64 string)
-                if (!string.IsNullOrEmpty(attachmentPath))
-                {
-                    if (File.Exists(attachmentPath))
-                    {
-                        // Avoid System.IO.File.Delete exception
-                        string newAttachmentPath = Path.Combine(tempFolderPath, Path.GetFileName(attachmentPath));
-                        File.Copy(attachmentPath, newAttachmentPath);
-                        message.Attachments.Add(new Attachment(newAttachmentPath));
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException("The attachment was not found in specified folder.", attachmentPath);
-                    }
-                }
-
-                // Always use HTML body format
-                message.IsBodyHtml = true;
-
-                SmtpClient smtpClient = new SmtpClient
-                {
-                    DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory,
-                    PickupDirectoryLocation = tempFolderPath
-                };
-                // Save the created message to the disk instead of calling the default mail client
-                smtpClient.Send(message);
 
                 // Remove X-Sender and From information so that the EML file will be opened in a *COMPOSE* window (NOT a display one)
                 using (StreamReader reader = new StreamReader(new DirectoryInfo(tempFolderPath).GetFiles().ToArray()[0].FullName))
