@@ -35,7 +35,7 @@ Here are the changes you need to apply to NAV objects in order to use OutlookCOM
 
 **NOTE**
 
-> May be necessary to apply further changes to the code for versions prior to NAV 2018 (looking at you NAV Classic :eyes:)
+> May be necessary to apply further changes to the code for versions prior to NAV 2018 (looking at you NAV Classic :eyes:) - see [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki) for more documentation
 
 
 Codeunit 397 Mail
@@ -247,6 +247,7 @@ For all those who want to extend the functionality or fix bugs (hope not) here a
 ## Special thanks
 
 * Alvise Giacomin
+* Federico Perucca
 * Paolo Garlatti
 * Everyone who will use, appreciate and share this tool!
 
