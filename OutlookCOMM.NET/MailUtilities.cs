@@ -12,7 +12,7 @@ namespace OutlookCOMM.NET
         /// Constructor which initializes a MailUtilities object with passed information.
         /// <see cref="MailUtilitiesBase(string, string, string, string, string, string, string)"/>
         /// </summary>
-        public MailUtilities(string from, string to, string cc, string bcc, string subject, string body, string attachmentPath) : base(from, to, cc, bcc, subject, body, attachmentPath) { }
+        public MailUtilities(string from, string to, string cc, string bcc, string subject, string body) : base(from, to, cc, bcc, subject, body) { }
 
         /// <summary>
         /// Method which creates an EML file.

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -13,7 +14,7 @@ namespace OutlookCOMM.Core
         public string BCC { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public string AttachmentPath { get; set; }
+        public List<KeyValuePair<string, string>> Attachments { get; } = new List<KeyValuePair<string, string>>();
         public char Delimiter { get; set; } = ';';
         public bool Unsent { get; set; } = true;
         public bool UseOutlookAccount { get; set; } = true;
@@ -29,8 +30,7 @@ namespace OutlookCOMM.Core
         /// <param name="bcc">The BCC address (or addresses) of the mail</param>
         /// <param name="subject">The subject of the mail to send</param>
         /// <param name="body">The body of the mail to send</param>
-        /// <param name="attachmentPath">The path of the file to add as an attachment to the mail</param>
-        protected MailUtilitiesBase(string from, string to, string cc, string bcc, string subject, string body, string attachmentPath)
+        protected MailUtilitiesBase(string from, string to, string cc, string bcc, string subject, string body)
         {
             From = from;
             To = to;
@@ -38,7 +38,6 @@ namespace OutlookCOMM.Core
             BCC = bcc;
             Subject = subject;
             Body = body;
-            AttachmentPath = attachmentPath;
         }
 
         /// <summary>
@@ -94,17 +93,17 @@ namespace OutlookCOMM.Core
 
             if (!string.IsNullOrEmpty(CC))
             {
-                foreach (string toAddress in Helpers.SplitAddressesByDelimiter(CC, Delimiter))
+                foreach (string ccAddress in Helpers.SplitAddressesByDelimiter(CC, Delimiter))
                 {
-                    message.CC.Add(toAddress);
+                    message.CC.Add(ccAddress);
                 }
             }
 
             if (!string.IsNullOrEmpty(BCC))
             {
-                foreach (string toAddress in Helpers.SplitAddressesByDelimiter(BCC, Delimiter))
+                foreach (string bccAddress in Helpers.SplitAddressesByDelimiter(BCC, Delimiter))
                 {
-                    message.Bcc.Add(toAddress);
+                    message.Bcc.Add(bccAddress);
                 }
             }
 
@@ -123,21 +122,36 @@ namespace OutlookCOMM.Core
         /// <param name="message">The MailMessage where to add the attachment</param>
         internal void PrepareAttachments(ref MailMessage message)
         {
-            // Add the attachment to the EML (encoded as base64 string)
-            if (!string.IsNullOrEmpty(AttachmentPath))
+            foreach(KeyValuePair<string,string> attachment in Attachments)
             {
-                if (File.Exists(AttachmentPath))
+                if (!string.IsNullOrEmpty(attachment.Key))
                 {
-                    // Avoid System.IO.File.Delete exception by making a copy of the original file
-                    string copiedAttachmentPath = Path.Combine(TempPath, Path.GetFileName(AttachmentPath));
-                    File.Copy(AttachmentPath, copiedAttachmentPath);
-                    message.Attachments.Add(new Attachment(copiedAttachmentPath));
-                }
-                else
-                {
-                    throw new FileNotFoundException("The attachment was not found in specified folder.", AttachmentPath);
+                    if (File.Exists(attachment.Key))
+                    {
+                        // Avoid System.IO.File.Delete exception by making a copy of the original file
+                        string copiedAttachmentPath = Path.Combine(TempPath, string.IsNullOrEmpty(attachment.Value) ? Path.GetFileName(attachment.Key) : attachment.Value);
+                        File.Copy(attachment.Key, copiedAttachmentPath, true);
+
+                        // Add the attachment to the EML (encoded as base64 string)
+                        message.Attachments.Add(new Attachment(copiedAttachmentPath));
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Method which allows to add a file to the Attachments collection.
+        /// </summary>
+        /// <param name="filePath">The path of the file to add</param>
+        /// <param name="fileName">The name of the attachment to use instead of the name of the file</param>
+        public void AddAttachment(string filePath, string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = Path.GetFileName(filePath);
+            }
+
+            Attachments.Add(new KeyValuePair<string,string>(filePath, fileName));
         }
 
         /// <summary>
