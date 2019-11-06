@@ -43,7 +43,7 @@ namespace OutlookCOMM.Core
         /// <summary>
         /// Method which creates an EML file.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The result of the operation</returns>
         public abstract bool SaveEML();
 
         /// <summary>
