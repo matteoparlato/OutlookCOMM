@@ -11,23 +11,11 @@ OutlookCOMM is a component which can be used in Microsoft Dynamics NAV as a work
 
 ## Getting started
 
-See [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki) for documentation
-
-## Downloads
-
-|NAV Classic / NAV 2009 (RTC)|NAV 2013+|
-| :---: | :---: |
-|COM / .NET 3.5|.NET 4.0+|
-|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)| 
+See [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki) for documentation about OutlookCOMM installation and configuration in NAV.
 
 ## Developing, testing and deploying OutlookCOMM
 
-For all those who want to extend the functionality or fix bugs (hope not) here are the prerequisites for developing OutlookCOMM:
-
-  - Visual Studio 2017+ with .NET desktop development workload.
-  - Microsoft Dynamics NAV 2009R2 (Classic) or any previous version for COM interface tests.
-  - Microsoft Dynamics NAV 2009R2 (RTC) or any later version for .NET library tests.
-  - Any email client with *.eml file support (Outlook or Thunderbird recommended).
+See [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki) for documentation about OutlookCOMM development.
 
 ## Authors
 
