@@ -11,14 +11,14 @@ OutlookCOMM is a component which can be used in Microsoft Dynamics NAV as a work
 
 ## Getting started
 
-See [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki)
+See [Wiki](https://github.com/matteoparlato/OutlookCOMM/wiki) for documentation
 
 ## Downloads
 
-|NAV Classic|NAV 2009 (RTC)|NAV 2013+|
-| :---: | :---: | :---: |
-|COM Events|.NET 3.5|.NET 4.0+|
-|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)| 
+|NAV Classic / NAV 2009 (RTC)|NAV 2013+|
+| :---: | :---: |
+|COM / .NET 3.5|.NET 4.0+|
+|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)|[Download](https://github.com/matteoparlato/OutlookCOMM/releases)| 
 
 ## Developing, testing and deploying OutlookCOMM
 
