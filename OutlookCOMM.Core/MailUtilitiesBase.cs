@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace OutlookCOMM.Core
@@ -14,6 +15,7 @@ namespace OutlookCOMM.Core
         public string BCC { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+        [ComVisible(false)]
         public List<KeyValuePair<string, string>> Attachments { get; } = new List<KeyValuePair<string, string>>();
         public char Delimiter { get; set; } = ';';
         public bool Unsent { get; set; } = true;

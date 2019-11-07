@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OutlookCOMM.Core
 {
@@ -10,6 +11,7 @@ namespace OutlookCOMM.Core
         public string BCC { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+        [ComVisible(false)]
         public List<KeyValuePair<string,string>> Attachments { get; }
         public char Delimiter { get; set; } 
         public bool Unsent { get; set; }
