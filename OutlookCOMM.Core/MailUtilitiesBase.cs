@@ -173,7 +173,7 @@ namespace OutlookCOMM.Core
         internal void FinalizeEML()
         {
             // Remove X-Sender and From headers so that the EML file will be opened in a *COMPOSE* window
-            using (StreamReader reader = new StreamReader(new DirectoryInfo(TempPath).GetFiles().ToArray()[0].FullName))
+            using (StreamReader reader = new StreamReader(new DirectoryInfo(TempPath).GetFiles().Where(file => file.Extension.Equals(".eml")).ToArray()[0].FullName))
             using (StreamWriter writer = new StreamWriter(Path.Combine(TempPath, "MailToSend.eml")))
             {
                 string line;
