@@ -6,11 +6,14 @@ using OutlookCOMM.Core;
 
 namespace OutlookCOMM.NET
 {
+    /// <summary>
+    /// MailUtilities class
+    /// </summary>
     public class MailUtilities : MailUtilitiesBase
     {
         /// <summary>
         /// Constructor which initializes a MailUtilities object with passed information.
-        /// <see cref="MailUtilitiesBase(string, string, string, string, string, string, string)"/>
+        /// <see cref="MailUtilitiesBase.MailUtilitiesBase(string, string, string, string, string, string)"/>
         /// </summary>
         public MailUtilities(string from, string to, string cc, string bcc, string subject, string body) : base(from, to, cc, bcc, subject, body) { }
 

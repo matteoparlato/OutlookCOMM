@@ -2,6 +2,9 @@
 
 namespace OutlookCOMM.Core
 {
+    /// <summary>
+    /// Helpers class
+    /// </summary>
     public static class Helpers
     {
         /// <summary>

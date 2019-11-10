@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace OutlookCOMM.Core
 {
+    /// <summary>
+    /// IMailUtilities interface
+    /// </summary>
     public interface IMailUtilities
     {
         public string From { get; set; }

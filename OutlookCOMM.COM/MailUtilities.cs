@@ -7,6 +7,9 @@ using OutlookCOMM.Core;
 
 namespace OutlookCOMM.COM
 {
+    /// <summary>
+    /// MailUtilities class
+    /// </summary>
     [ComVisible(true)]
     [Guid("C79C6ABA-10F6-4DEA-B9AE-69DDB62C5881")]
     [ClassInterface(ClassInterfaceType.AutoDual)]
@@ -15,21 +18,22 @@ namespace OutlookCOMM.COM
     {
         /// <summary>
         /// Constructor which initializes a MailUtilities object with passed information.
-        /// <see cref="MailUtilitiesBase(string, string, string, string, string, string, string)"/>
+        /// <see cref="MailUtilitiesBase.MailUtilitiesBase(string, string, string, string, string, string)"/>
         /// </summary>
         public MailUtilities(string from, string to, string cc, string bcc, string subject, string body) : base(from, to, cc, bcc, subject, body) { }
 
         /// <summary>
         /// Constructor with no parameters required for COM initialization.
+        /// <see cref="MailUtilitiesBase.MailUtilitiesBase()"/>
         /// </summary>
         public MailUtilities()
         {
             //
-        } 
+        }
 
         /// <summary>
-        /// 
-        /// <see cref="MailUtilitiesBase(string, string, string, string, string, string, string)"/>
+        /// Method which allows to create an instance of MailUtilities class.
+        /// <see cref="MailUtilities(string, string, string, string, string, string)"/>
         /// </summary>
         /// <returns>An instance of MailUtilities</returns>
         public MailUtilities CreateInstance(string from, string to, string cc, string bcc, string subject, string body)

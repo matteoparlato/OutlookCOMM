@@ -7,6 +7,9 @@ using System.Text;
 
 namespace OutlookCOMM.Core
 {
+    /// <summary>
+    /// MailUtilitiesBase abstract class
+    /// </summary>
     public abstract class MailUtilitiesBase : IMailUtilities
     {
         public string From { get; set; }
