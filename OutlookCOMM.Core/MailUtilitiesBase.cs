@@ -24,6 +24,14 @@ namespace OutlookCOMM.Core
         internal readonly string TempPath = Path.Combine(Path.GetTempPath(), "OutlookCOMM");
 
         /// <summary>
+        /// Constructor with no parameters required for COM initialization.
+        /// </summary>
+        public MailUtilitiesBase()
+        {
+            //
+        }
+
+        /// <summary>
         /// Constructor which initializes a MailUtilitiesBase object with passed information.
         /// </summary>
         /// <param name="from">The sender address of the mail</param>

@@ -20,6 +20,24 @@ namespace OutlookCOMM.COM
         public MailUtilities(string from, string to, string cc, string bcc, string subject, string body) : base(from, to, cc, bcc, subject, body) { }
 
         /// <summary>
+        /// Constructor with no parameters required for COM initialization.
+        /// </summary>
+        public MailUtilities()
+        {
+            //
+        } 
+
+        /// <summary>
+        /// 
+        /// <see cref="MailUtilitiesBase(string, string, string, string, string, string, string)"/>
+        /// </summary>
+        /// <returns>An instance of MailUtilities</returns>
+        public MailUtilities CreateInstance(string from, string to, string cc, string bcc, string subject, string body)
+        {
+            return new MailUtilities(from, to, cc, bcc, subject, body);
+        }
+
+        /// <summary>
         /// Method which creates an EML file.
         /// <see cref="MailUtilitiesBase.SaveEML"/>
         /// </summary>
