@@ -10,10 +10,12 @@ namespace OutlookCOMM.Core
         /// <param name="addresses">The string containing the addresses</param>
         /// <param name="delimiter">The delimiter used to separate the addresses</param>
         /// <returns>A collection of addresses</returns>
-        public static IEnumerable<string> SplitAddressesByDelimiter(string addresses, char delimiter)
+        public static string[] SplitAddressesByDelimiter(string addresses, char delimiter)
         {
             int startIndex = 0;
             int delimiterIndex = 0;
+
+            List<string> splittedAddresses = new List<string>();
 
             while (delimiterIndex >= 0)
             {
@@ -26,7 +28,7 @@ namespace OutlookCOMM.Core
 
                 if (!substring.Contains("\"") || substring.IndexOf("\"") != substring.LastIndexOf("\""))
                 {
-                    yield return substring;
+                    splittedAddresses.Add(substring);
                     addresses = addresses.Substring(delimiterIndex + 1);
                     startIndex = 0;
                 }
@@ -35,6 +37,8 @@ namespace OutlookCOMM.Core
                     startIndex = delimiterIndex + 1;
                 }
             }
+
+            return splittedAddresses.ToArray();
         }
     }
 }
