@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using System.IO;
 using System.Diagnostics;
 using System.Net.Mail;
 using OutlookCOMM.Core;
@@ -66,10 +65,8 @@ namespace OutlookCOMM.COM
 
                 message.Dispose();
 
-                FinalizeEML();
-
-                // Open the EML file with the default mail client set to open *.eml files
-                Process.Start(Path.Combine(TempPath, "MailToSend.eml"));
+                // Open the finalized EML file with the default mail client set to open *.eml files
+                Process.Start(FinalizeEML());
             }
             catch (Exception ex)
             {

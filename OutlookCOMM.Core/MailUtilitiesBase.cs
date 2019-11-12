@@ -12,16 +12,68 @@ namespace OutlookCOMM.Core
     /// </summary>
     public abstract class MailUtilitiesBase : IMailUtilities
     {
+        /// <summary>
+        /// The string which contains the from address of the mail.
+        /// </summary>
         public string From { get; set; }
+
+        /// <summary>
+        /// The string which contains the recipients of the mail.
+        /// </summary>
         public string To { get; set; }
+
+        /// <summary>
+        /// The string which contains the carbon copy (CC) recipients of the mail.
+        /// </summary>
         public string CC { get; set; }
+
+        /// <summary>
+        /// The string which contains the blind carbon copy (BCC) recipients of the mail.
+        /// </summary>
         public string BCC { get; set; }
+
+        /// <summary>
+        /// The string which contains the subject line of the mail.
+        /// </summary>
         public string Subject { get; set; }
+
+        /// <summary>
+        /// The string which contains the body text of the mail.
+        /// </summary>
         public string Body { get; set; }
+
+        /// <summary>
+        /// The attachment collection used to store data attached to the mail.
+        /// </summary>
+        /// <value>
+        /// The key contains the path of the file added as an attachment while the value contains
+        /// the text to use as file name for the attachment (can be empty).
+        /// </value>
         [ComVisible(false)]
         public List<KeyValuePair<string, string>> Attachments { get; } = new List<KeyValuePair<string, string>>();
+
+        /// <summary>
+        /// The string which contains the delimiter to use when splitting the addresses.
+        /// </summary>
+        /// <value>
+        /// The default value is ';'.
+        /// </value>
         public char Delimiter { get; set; } = ';';
+
+        /// <summary>
+        /// The boolean which determine whether is necessary to add the X-Unsent header to the mail.
+        /// </summary>
+        /// <value>
+        /// The default value is true.
+        /// </value>
         public bool Unsent { get; set; } = true;
+
+        /// <summary>
+        /// The boolean which determine whether is necessary to use the From address configured in Outlook. 
+        /// </summary>
+        /// <value>
+        /// The default value is true.
+        /// </value>
         public bool UseOutlookAccount { get; set; } = true;
 
         internal readonly string TempPath = Path.Combine(Path.GetTempPath(), "OutlookCOMM");
@@ -37,12 +89,12 @@ namespace OutlookCOMM.Core
         /// <summary>
         /// Constructor which initializes a MailUtilitiesBase object with passed information.
         /// </summary>
-        /// <param name="from">The sender address of the mail</param>
-        /// <param name="to">The receiver address (or addresses) of the mail</param>
-        /// <param name="cc">The CC address (or addresses) of the mail</param>
-        /// <param name="bcc">The BCC address (or addresses) of the mail</param>
-        /// <param name="subject">The subject of the mail to send</param>
-        /// <param name="body">The body of the mail to send</param>
+        /// <param name="from">The from address of the mail</param>
+        /// <param name="to">The recipients address (or addresses) of the mail</param>
+        /// <param name="cc">The CC recipients of the mail</param>
+        /// <param name="bcc">The BCC recipients of the mail</param>
+        /// <param name="subject">The subject line of the mail</param>
+        /// <param name="body">The body text of the mail</param>
         protected MailUtilitiesBase(string from, string to, string cc, string bcc, string subject, string body)
         {
             From = from;
@@ -54,7 +106,7 @@ namespace OutlookCOMM.Core
         }
 
         /// <summary>
-        /// Method which creates an EML file.
+        /// Method which creates and opens an EML file.
         /// </summary>
         /// <returns>The result of the operation</returns>
         public abstract bool SaveEML();
@@ -62,11 +114,14 @@ namespace OutlookCOMM.Core
         /// <summary>
         /// Method which prepares the temp folder where the EML file will be stored.
         /// </summary>
+        /// <remarks>
+        /// Recursively deletes previously created temporary files and folders to avoid possible conflicts when
+        /// creating the new EML file.
+        /// </remarks>
         internal void PrepareTempFolder()
         {
             if (Directory.Exists(TempPath))
             {
-                // Delete previously created files and folders to avoid possible conflicts
                 Directory.Delete(TempPath, true);
             }
 
@@ -74,14 +129,15 @@ namespace OutlookCOMM.Core
         }
 
         /// <summary>
-        /// Method which initializes passed MailMessage object.
+        /// Method which initializes passed MailMessage object with the information specified in MailUtilitiesBase
+        /// properties.
         /// </summary>
         /// <param name="message">The MailMessage to initialize</param>
         internal void PrepareMessage(ref MailMessage message)
         {
             if (Unsent)
             {
-                // Allow to open the EML in a *COMPOSE* window
+                // Allows to open the EML in a compose window
                 message.Headers.Add("X-Unsent", "1");
             }
 
@@ -130,9 +186,10 @@ namespace OutlookCOMM.Core
         }
 
         /// <summary>
-        /// Method which adds an attachment to passed MailMessage.
+        /// Method which initializes passed MailMessage Attachments property with the attachments added to the
+        /// Attachments collection.
         /// </summary>
-        /// <param name="message">The MailMessage where to add the attachment</param>
+        /// <param name="message">The MailMessage to initialize</param>
         internal void PrepareAttachments(ref MailMessage message)
         {
             foreach(KeyValuePair<string,string> attachment in Attachments)
@@ -156,7 +213,7 @@ namespace OutlookCOMM.Core
         /// Method which allows to add a file to the Attachments collection.
         /// </summary>
         /// <param name="filePath">The path of the file to add</param>
-        /// <param name="fileName">The name of the attachment to use instead of the name of the file</param>
+        /// <param name="fileName">The text to use as file name</param>
         public void AddAttachment(string filePath, string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -170,11 +227,18 @@ namespace OutlookCOMM.Core
         /// <summary>
         /// Method which finalizes the created EML file.
         /// </summary>
-        internal void FinalizeEML()
+        /// <remarks>
+        /// Creates a copy of the created EML file with a known file name (SMTPClient.Send uses random GUIDs as file names
+        /// when saving the EML to the disk). If UseOutlookAccount is true then X-Sender and From headers will be removed
+        /// so that the mail account defined in Outlook is used as From address.
+        /// </remarks>
+        /// <returns>The path of finalized EML file</returns>
+        internal string FinalizeEML()
         {
-            // Remove X-Sender and From headers so that the EML file will be opened in a *COMPOSE* window
+            string finalizedEMLFilePath = Path.Combine(TempPath, "MailToSend.eml");
+
             using (StreamReader reader = new StreamReader(new DirectoryInfo(TempPath).GetFiles().Where(file => file.Extension.Equals(".eml")).ToArray()[0].FullName))
-            using (StreamWriter writer = new StreamWriter(Path.Combine(TempPath, "MailToSend.eml")))
+            using (StreamWriter writer = new StreamWriter(finalizedEMLFilePath))
             {
                 string line;
                 if (!UseOutlookAccount)
@@ -183,19 +247,21 @@ namespace OutlookCOMM.Core
                     {
                         writer.Write(line);
                     }
-
-                    return;
                 }
-
-                while ((line = reader.ReadLine()) != null)
+                else
                 {
-                    if (line.StartsWith("X-Sender:") || line.StartsWith("From:"))
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        continue;
-                    }
+                        if (line.StartsWith("X-Sender:") || line.StartsWith("From:"))
+                        {
+                            continue;
+                        }
 
-                    writer.WriteLine(line);
+                        writer.WriteLine(line);
+                    }
                 }
+
+                return finalizedEMLFilePath;
             }
         }
     }
